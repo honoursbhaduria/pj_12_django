@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>url shortener</title>
+</head>
+<body>
+    <h1>Welcome to the URL shortener</h1>
+
+    <form action="" method ="POST">
+        {% csrf_token %}
+        {{  form.as_p }}
+        <button type="submit" > Shorten URL </button>
+    </form> 
+    <h2>Shorten URL</h2> 
+    <ul>
+        {% for entry in data %}
+        <li>{{entry.url}} -> <a href="/u/{{entry.slug}}"></a></li><li>{{entry.url}} -> <a href="/u/{{entry.slug}}"></a></li> 
+    </ul>
+
+</body>
+</html>
