@@ -38,3 +38,5 @@ def urlRedirect(request, slugs):
     # Find the original URL by the slug
     data = UrlData.objects.get(slug=slugs)
     return redirect(data.url)   # Redirect to the original URL
+
+

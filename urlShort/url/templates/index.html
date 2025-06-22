@@ -3,21 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>url shortener</title>
+    <title>URL Shortener</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .container {
+            max-width: 800px;
+            margin-top: 50px;
+        }
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .card-header {
+            background-color: #0d6efd;
+            color: white;
+            border-radius: 10px 10px 0 0 !important;
+        }
+        .btn-primary {
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+        }
+        .url-list {
+            margin-top: 30px;
+        }
+        .url-item {
+            background-color: white;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        .short-url {
+            color: #0d6efd;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
-    <h1>Welcome to the URL shortener</h1>
+    <div class="container">
+        <div class="card mb-4">
+            <div class="card-header text-center">
+                <h1>URL Shortener</h1>
+            </div>
+            <div class="card-body">
+                <form action="" method="POST">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="url" class="form-label">Enter your long URL:</label>
+                        {{ form.url }}
+                        <div class="form-text">We'll shorten it for you to make it easier to share.</div>
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg">Shorten URL</button>
+                    </div>
+                </form>
+            </div>
+        </div>
 
-    <form action="" method ="POST">
-        {% csrf_token %}
-        {{  form.as_p }}
-        <button type="submit" > Shorten URL </button>
-    </form> 
-    <h2>Shorten URL</h2> 
-    <ul>
-        {% for entry in data %}
-        <li>{{entry.url}} -> <a href="/u/{{entry.slug}}"></a></li><li>{{entry.url}} -> <a href="/u/{{entry.slug}}"></a></li> 
-    </ul>
+        {% if data %}
+        <div class="url-list">
+            <h2 class="mb-4">Your Shortened URLs</h2>
+            <div class="list-group">
+                {% for entry in data %}
+                <div class="url-item list-group-item">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>Original:</strong> 
+                            <a href="{{ entry.url }}" target="_blank" class="text-truncate d-inline-block" style="max-width: 300px;">
+                                {{ entry.url }}
+                            </a>
+                        </div>
+                        <div>
+                            <strong>Shortened:</strong> 
+                            <a href="/u/{{ entry.slug }}" target="_blank" class="short-url">
+                                {{ request.get_host }}/u/{{ entry.slug }}
+                            </a>
+                        </div>
+                        <button class="btn btn-sm btn-outline-primary copy-btn" data-url="{{ request.get_host }}/u/{{ entry.slug }}">
+                            Copy
+                        </button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Copy functionality
+        document.querySelectorAll('.copy-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const url = this.getAttribute('data-url');
+                navigator.clipboard.writeText(url).then(() => {
+                    this.textContent = 'Copied!';
+                    setTimeout(() => {
+                        this.textContent = 'Copy';
+                    }, 2000);
+                });
+            });
+        });
+    </script>
 </body>
 </html>
